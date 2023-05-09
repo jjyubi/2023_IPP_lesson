@@ -14,8 +14,8 @@ int main()
         printf("How many lines? (1..100) >> ");
         ptr = fgets(line_s, sizeof(line_s), stdin);
 
-        //printf("리턴값 : %p\n", ptr);
-        //printf("입력한 문자 : %s", line_s);
+        printf("리턴값 : %p\n", ptr);
+        printf("입력한 문자 : %s", line_s);
         //printf("입력한 문자의 길이 : %d\n", (strlen(line_s) - 1));
 
         line_s[strlen(line_s) - 1] = '\0';
@@ -42,14 +42,13 @@ int main()
         //  -> 값이 정수가 아닌 경우 0을 반환함
         //printf("마지막 배열 번호 [ %d ] => isdigit : %d\n", num, isdigit(line_s[num]));
         //printf("마지막에 들어있는 문자 : %c \n", line_s[num]);
-        //printf("리턴값 : %p \n", ptr);
+        printf("리턴값 : %p \n", ptr);
+        printf("배열 검사 후 문자 : %s \n", line_s);
 
         if (ptr == NULL) {
-            //printf("현재 마지막 배열 번호 : %d\n", num);
-            //printf("%d번에 들어있는 문자 : %c\n", num-1, line_s[num-1]);
-            //printf("%d번에 들어있는 문자 : %c\n", num, line_s[num]);
-            //printf("%d번에 들어있는 문자 : %c\n", num+1, line_s[num+1]);
+            printf("ctrl+d 이후 문자 : %s \n", line_s);
             rewind(stdin);
+            printf("rewind(stdin) 이후 문자 : %s \n", line_s);
             printf("\nInvalid input - Range 1..100\n");
         }
         else if ((isdigit(line_s[num])) == 0) {
@@ -61,6 +60,7 @@ int main()
             //printf("리턴값 : %p\n\n", ptr);
 
             rewind(stdin);
+            printf("모두 정수 일 경우 문자 : %s \n", line_s);
 
             if (line >= 1 && line <= 100) {
                 printf("입력한 라인 수 만큼 출력합니다.\n\n");
@@ -73,7 +73,6 @@ int main()
                 printf("\n종료합니다.\n");
                 break;
             }
-
             else {
                 printf("Invalid input - Range 1..100\n");
             }
