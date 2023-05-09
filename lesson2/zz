@@ -1,0 +1,3 @@
+#!/bin/bash
+#gcc -wall [options] [source file] [-o output file]
+gcc -Wall main.c -o main
