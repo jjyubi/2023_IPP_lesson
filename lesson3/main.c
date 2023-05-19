@@ -1,81 +1,73 @@
+/* '!' // 논리 부정 연산자 이용
+   valid(유효한)_line // fgets로 입력받은 값의 유효성을 비교하여 조건문 작성
+   Ctrl+D입력의 조건문을 위로 변경 // continue 문 사용
+   숫자가 아닌 문자의 예외처리를 위해 배열검사를 단축 // !isdigit(line[i]) 사용
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>  // isdigit
+#include <ctype.h>
+
+#define SIZE 100
 
 int main()
 {
-    int i, j;     // [i = \n][j = *]을 찍기 위한 반복 계산 변수
-    int len, num;
-    char line_s[50 + 2];
-    char* ptr;
+    char line[SIZE];
+    int i, j;
+    int num;
+    int valid_line = 0; // line입력 유효성. 0=유효하지 않은 입력. 1=유효한 입력.
 
-    while (1) {
+    // valid_line 값이 0인 경우 while 계속 실행
+    // valid_line 값이 1인 경우 while 종료
+    while (!valid_line) {
         printf("How many lines? (1..100) >> ");
-        ptr = fgets(line_s, sizeof(line_s), stdin);
-
-        printf("리턴값 : %p\n", ptr);
-        printf("입력한 문자 : %s", line_s);
-        //printf("입력한 문자의 길이 : %d\n", (strlen(line_s) - 1));
-
-        line_s[strlen(line_s) - 1] = '\0';
-
-        // fgets 에서는 \n를 함께 저장하기 때문에 입력받은 문자의 길이는 -1이고
-        // 배열은 0 에서부터 시작하므로 '\n'이전에 입력받은 마지막 문자의 배열 번호는 문자의 길이에서 -1을 더 해주어야함
-        // 마지막 배열의 번호를 알기위해 문자길이에서 -2를 한 변수 : len
-        len = (strlen(line_s) - 2);
-
-        for (num = 0; num <= len; num++) {
-            if (line_s[num] < 48 || line_s[num]>57) {
-                // 입력받은 문자가 정수가 아닐 경우
-                //printf("    배열 번호 [ %d ]", num);
-                //printf("    입력한 [% c] 는 정수가 아닙니다.\n", line_s[num]);
-                //printf("    isdigit : % d\n\n", isdigit(line_s[num]));
-                
-                // 정수가 아닌 문자가 들어있다면 배열 검사를 종료
-                break;
-            }
+        if(fgets(line, sizeof(line), stdin) == NULL) {
+            printf("Ctrl+D가 입력되었습니다. 다시 입력해주세요.\n");
+            continue;
         }
+        line[strcspn(line, "\n")] = '\0';
+        // 개행문자의 위치를 찾아서 제거
 
-        // 정수를 판단하는 함수 isdigit 사용.
-        //  -> 값이 정수일 경우 0이 아닌 수를 반환함
-        //  -> 값이 정수가 아닌 경우 0을 반환함
-        //printf("마지막 배열 번호 [ %d ] => isdigit : %d\n", num, isdigit(line_s[num]));
-        //printf("마지막에 들어있는 문자 : %c \n", line_s[num]);
-        printf("리턴값 : %p \n", ptr);
-        printf("배열 검사 후 문자 : %s \n", line_s);
-
-        if (ptr == NULL) {
-            printf("ctrl+d 이후 문자 : %s \n", line_s);
-            rewind(stdin);
-            printf("rewind(stdin) 이후 문자 : %s \n", line_s);
-            printf("\nInvalid input - Range 1..100\n");
-        }
-        else if ((isdigit(line_s[num])) == 0) {
-            printf("Invalid input - Range 1..100\n");
-        }
-        else if ((isdigit(line_s[num])) != 0) {
-            int line = (strtol(line_s, NULL, 10));
-            //printf("10진수로 변환한 line 값 : %d\n\n", line);
-            //printf("리턴값 : %p\n\n", ptr);
-
-            rewind(stdin);
-            printf("모두 정수 일 경우 문자 : %s \n", line_s);
-
-            if (line >= 1 && line <= 100) {
-                printf("입력한 라인 수 만큼 출력합니다.\n\n");
-                for (i = 0; i < line; i++) {
-                    for (j = 0; j <= i; j++) {
-                        printf("*");
-                    }
-                    printf("\n");
-                }
-                printf("\n종료합니다.\n");
-                break;
-            }
-            else {
+        int valid_num = 1;
+        for (i = 0; i <strlen(line); i++) {
+            if(!isdigit(line[i])) { // 입력이 숫자가 아닌 경우. 정수를 판별하는 isdigit 이욯
+                valid_num = 0;
+                printf("숫자를 입력하시오.\n");
                 printf("Invalid input - Range 1..100\n");
+                break;
+            }
+            if(isdigit(line[i])) {  // 입력이 숫자인 경우
+                if(!isdigit(line[i+1])) {   // 숫자 다음의 입력이 숫자가 아닌 경우.
+                    valid_num = 0;
+                    printf("숫자를 입력하시오.\n");
+                    printf("Invalid input - Range 1..100\n");
+                    break;
+                }
+            }
+        }
+        
+
+        // 1~100 사이의 값인지 검사
+        if(valid_num) {
+            num = atoi(line);   // 정수로변환
+            // 1보다 작고 100보다 큰 경우 (범위를 벗어나게 된 경우)
+            if (num <1 || num > 100) {
+                printf("1~100 사이의 값을 입력하시오.\n");
+            } else {
+                // while 문의 입력값이 유효한 경우 루프를 끝내도록 만들어준다.
+                valid_line = 1;
             }
         }
     }
+
+    // * 라인을 출력하는 코드 작성
+    for (i = 0; i < num; i++) {    // 정수로 변환한 num변수 사용
+        for (j = 0; j <= i; j++) {
+            printf("*");
+        }
+        printf("\n");
+    }
+
+    return 0;
 }
